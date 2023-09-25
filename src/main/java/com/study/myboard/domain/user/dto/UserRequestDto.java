@@ -1,5 +1,7 @@
 package com.study.myboard.domain.user.dto;
 
+import com.study.myboard.domain.user.model.User;
+import com.study.myboard.global.type.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,9 +19,9 @@ public class UserRequestDto {
         private String email;
     }
 
+    // 이메일 인증코드 검증
     @Getter
     @NoArgsConstructor
-    // 이메일 인증코드 검증
     public static class verifyCodeRequest {
         @NotBlank(message = "이메일은 필수 입력값입니다.")
         @Email(message = "올바른 이메일 형식이 아닙니다.")
@@ -28,6 +30,5 @@ public class UserRequestDto {
         @NotBlank(message = "인증번호는 필수 입력값입니다.")
         private String code;
     }
-
 
 }

@@ -1,6 +1,7 @@
 package com.study.myboard.domain.user.service;
 
 import com.study.myboard.domain.user.dto.UserRequestDto;
+import com.study.myboard.domain.user.repository.UserRepository;
 import com.study.myboard.global.auth.MailService;
 import com.study.myboard.global.auth.RedisService;
 import com.study.myboard.global.exception.CustomErrorCode;
@@ -15,8 +16,7 @@ import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.Random;
 
-import static com.study.myboard.global.exception.CustomErrorCode.VERIFICATION_CODE_GENERATION_ERROR;
-import static com.study.myboard.global.exception.CustomErrorCode.VERIFICATION_CODE_MISMATCH;
+import static com.study.myboard.global.exception.CustomErrorCode.*;
 
 
 @Service
@@ -25,6 +25,7 @@ import static com.study.myboard.global.exception.CustomErrorCode.VERIFICATION_CO
 public class UserService {
     private final MailService mailService;
     private final RedisService redisService;
+    private final UserRepository userRepository;
 
     @Value("${spring.mail.auth-code-expiration-millis}")
     private long authCodeExpirationMillis;
@@ -50,11 +51,16 @@ public class UserService {
 
     // 인증번호 발송
     public void sendCodeToEmail(UserRequestDto.askCodeRequest request) throws NoSuchAlgorithmException {
+        // 이메일 가입 여부 확인
+        userRepository.findByEmail(request.getEmail()).ifPresent(user -> {
+            throw new CustomException(EMAIL_ALREADY_EXISTS);
+        });
+
         String title = "my-board 이메일 인증 번호";
         String authCode = createCode();
         mailService.sendEmail(request.getEmail(), title, authCode);
 
-        //인증번호 Redis에 저장 ( key = Email / value = AuthCode )
+        // 인증번호 Redis에 저장 ( key = Email / value = AuthCode )
         redisService.saveCode(request.getEmail(), authCode, Duration.ofMillis(this.authCodeExpirationMillis));
     }
 
@@ -62,7 +68,6 @@ public class UserService {
     public void verifyCode(UserRequestDto.verifyCodeRequest request) {
         String redisAuthCode = redisService.getCode(request.getEmail());
         boolean authResult = redisAuthCode.equals(request.getCode());
-
         if(authResult == false){
             throw new CustomException(VERIFICATION_CODE_MISMATCH);
         }

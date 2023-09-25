@@ -1,13 +1,15 @@
 package com.study.myboard.domain.user.model;
 
 import com.study.myboard.domain.BaseTimeEntity;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor
 @Table(name = "users")
 public class User extends BaseTimeEntity {
 
