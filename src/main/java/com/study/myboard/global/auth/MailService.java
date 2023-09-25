@@ -21,7 +21,7 @@ public class MailService {
 
     // 이메일 발송
     public void sendEmail(String email, String title, String authCode) {
-        String content = "요청하신 인증코드는 [ "+authCode+" ] 입니다.\n감사합니다.";
+        String content = "요청하신 인증번호는 [ "+authCode+" ] 입니다.\n감사합니다.";
         SimpleMailMessage emailForm = createEmailForm(email, title, content);
         try {
             emailSender.send(emailForm);

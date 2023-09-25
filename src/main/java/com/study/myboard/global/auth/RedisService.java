@@ -17,7 +17,7 @@ public class RedisService {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    // 인증코드 저장 ( key = Email / value = AuthCode )
+    // 인증번호 저장 ( key = Email / value = AuthCode )
     public void saveCode(String email, String code, Duration expirationDuration) {
         redisTemplate.opsForValue().set(email, code, expirationDuration);
     }

@@ -14,10 +14,10 @@ public enum CustomErrorCode {
     INVALID_VALUE(HttpStatus.BAD_REQUEST, 1002, "잘못된 입력값입니다."),
 
     // User (2xxx)
-    VERIFICATION_CODE_GENERATION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 2001, "이메일 인증코드 생성 오류"),
-    EMAIL_SEND_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 2002, "이메일 인증코드 발송 오류"),
-    VERIFICATION_CODE_NOT_FOUND(HttpStatus.NOT_FOUND, 2003, "인증코드 검증 오류"),
-    VERIFICATION_CODE_MISMATCH(HttpStatus.BAD_REQUEST, 2004, "인증코드가 일치하지 않습니다.");
+    VERIFICATION_CODE_GENERATION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 2001, "이메일 인증번호 생성 오류가 발생했습니다."),
+    EMAIL_SEND_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 2002, "이메일 인증번호 발송 오류가 발생했습니다."),
+    VERIFICATION_CODE_NOT_FOUND(HttpStatus.NOT_FOUND, 2003, "이메일 인증번호 검증 오류가 발생했습니다."),
+    VERIFICATION_CODE_MISMATCH(HttpStatus.BAD_REQUEST, 2004, "인증번호가 일치하지 않습니다.");
 
     private final HttpStatus httpStatus;
     private final int code;

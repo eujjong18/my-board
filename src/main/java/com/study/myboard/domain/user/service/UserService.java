@@ -33,7 +33,7 @@ public class UserService {
     /**
      * 이메일 인증
      */
-    // 랜덤 인증코드 생성
+    // 랜덤 인증번호 생성
     private String createCode() throws NoSuchAlgorithmException {
         int lenth = 6;
         try {
@@ -48,17 +48,17 @@ public class UserService {
         }
     }
 
-    // 인증코드 발송
+    // 인증번호 발송
     public void sendCodeToEmail(UserRequestDto.askCodeRequest request) throws NoSuchAlgorithmException {
         String title = "my-board 이메일 인증 번호";
         String authCode = createCode();
         mailService.sendEmail(request.getEmail(), title, authCode);
 
-        //인증 번호 Redis에 저장 ( key = Email / value = AuthCode )
+        //인증번호 Redis에 저장 ( key = Email / value = AuthCode )
         redisService.saveCode(request.getEmail(), authCode, Duration.ofMillis(this.authCodeExpirationMillis));
     }
 
-    // 인증코드 검증
+    // 인증번호 검증
     public void verifyCode(UserRequestDto.verifyCodeRequest request) {
         String redisAuthCode = redisService.getCode(request.getEmail());
         boolean authResult = redisAuthCode.equals(request.getCode());
