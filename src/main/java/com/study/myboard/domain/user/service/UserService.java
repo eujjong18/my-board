@@ -3,6 +3,8 @@ package com.study.myboard.domain.user.service;
 import com.study.myboard.domain.user.dto.UserRequestDto;
 import com.study.myboard.global.auth.MailService;
 import com.study.myboard.global.auth.RedisService;
+import com.study.myboard.global.exception.CustomErrorCode;
+import com.study.myboard.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +14,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.Random;
+
+import static com.study.myboard.global.exception.CustomErrorCode.VERIFICATION_CODE_GENERATION_ERROR;
+import static com.study.myboard.global.exception.CustomErrorCode.VERIFICATION_CODE_MISMATCH;
+
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +44,7 @@ public class UserService {
             }
             return builder.toString();
         } catch (NoSuchAlgorithmException e) {
-            throw new NoSuchAlgorithmException("** UserService.createCode() exception occur!");
+            throw new CustomException(VERIFICATION_CODE_GENERATION_ERROR);
         }
     }
 
@@ -58,8 +64,7 @@ public class UserService {
         boolean authResult = redisAuthCode.equals(request.getCode());
 
         if(authResult == false){
-            log.debug("[이메일 인증] UserService.verifyCode() exception occur - requestCode: {}, redisCode: {}", request.getCode(), redisAuthCode);
-            throw new RuntimeException("인증번호가 일치하지 않습니다.");
+            throw new CustomException(VERIFICATION_CODE_MISMATCH);
         }
     }
 
