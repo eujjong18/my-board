@@ -1,6 +1,7 @@
 package com.study.myboard.domain.user.model;
 
 import com.study.myboard.domain.BaseTimeEntity;
+import com.study.myboard.global.type.Role;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,4 +30,7 @@ public class User extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }

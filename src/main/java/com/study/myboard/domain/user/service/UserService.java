@@ -1,6 +1,7 @@
 package com.study.myboard.domain.user.service;
 
 import com.study.myboard.domain.user.dto.UserRequestDto;
+import com.study.myboard.domain.user.model.User;
 import com.study.myboard.domain.user.repository.UserRepository;
 import com.study.myboard.global.auth.MailService;
 import com.study.myboard.global.auth.RedisService;
@@ -9,6 +10,7 @@ import com.study.myboard.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
@@ -26,6 +28,7 @@ public class UserService {
     private final MailService mailService;
     private final RedisService redisService;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${spring.mail.auth-code-expiration-millis}")
     private long authCodeExpirationMillis;
@@ -71,6 +74,28 @@ public class UserService {
         if(authResult == false){
             throw new CustomException(VERIFICATION_CODE_MISMATCH);
         }
+    }
+
+    /**
+     * 회원가입
+     */
+    public void signupUser(UserRequestDto.signupRequest request){
+        // 닉네임 중복 여부 확인
+        userRepository.findByNickname(request.getNickname()).ifPresent(user -> {
+            throw new CustomException(NICKNAME_ALREADY_EXISTS);
+        });
+
+        // 이메일 가입 여부 확인
+        userRepository.findByEmail(request.getEmail()).ifPresent(user -> {
+            throw new CustomException(EMAIL_ALREADY_EXISTS);
+        });
+
+        // 비밀번호 암호화
+        String encryptedPassword = passwordEncoder.encode(request.getPassword());
+
+        // 유저 등록
+        User newUser = request.toEntity(encryptedPassword);
+        userRepository.save(newUser);
     }
 
 
