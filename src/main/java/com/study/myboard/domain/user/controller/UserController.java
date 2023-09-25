@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
 
 @RestController
@@ -20,7 +21,7 @@ public class UserController {
 
     // 인증번호 발송 요청
     @PostMapping("/email/code-request")
-    public ResponseEntity<String> requestVerificationCode(@RequestBody UserRequestDto.askCodeRequest request)
+    public ResponseEntity<String> requestVerificationCode(@Valid @RequestBody UserRequestDto.askCodeRequest request)
             throws NoSuchAlgorithmException {
         userService.sendCodeToEmail(request);
         return ResponseEntity.ok("인증번호 발송 성공");
@@ -28,7 +29,7 @@ public class UserController {
 
     // 인증번호 검증
     @PostMapping("/email/code-verification")
-    public ResponseEntity<String> verifyVerificationCode(@RequestBody UserRequestDto.verifyCodeRequest request) {
+    public ResponseEntity<String> verifyVerificationCode(@Valid @RequestBody UserRequestDto.verifyCodeRequest request) {
         userService.verifyCode(request);
         return ResponseEntity.ok("인증번호 확인 성공");
     }
