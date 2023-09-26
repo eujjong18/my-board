@@ -54,6 +54,7 @@ public class UserRequestDto {
                     .nickname(nickname)
                     .email(email)
                     .password(encryptedPassword)
+                    .role(Role.USER)
                     .build();
         }
     }
