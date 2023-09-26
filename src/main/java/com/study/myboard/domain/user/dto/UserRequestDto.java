@@ -59,4 +59,17 @@ public class UserRequestDto {
         }
     }
 
+    // 로그인
+    @Getter
+    @NoArgsConstructor
+    public static class loginRequest {
+        @NotBlank(message = "이메일은 필수 입력값입니다.")
+        @Email(message = "올바른 이메일 형식이 아닙니다.")
+        private String email;
+
+        @NotBlank(message = "비밀번호는 필수 입력값입니다.")
+        private String password;
+    }
+
+
 }

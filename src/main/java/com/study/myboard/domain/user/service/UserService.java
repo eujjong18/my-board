@@ -98,4 +98,13 @@ public class UserService {
         userRepository.save(newUser);
     }
 
+    /**
+     * 로그인
+     */
+    public String login(UserRequestDto.loginRequest request){
+        String token = null;
+        // TODO 로그인 로직
+        return token;
+    }
+
 }

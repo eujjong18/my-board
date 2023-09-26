@@ -36,9 +36,16 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody UserRequestDto.signupRequest request) {
+    public ResponseEntity<String> signup(@Valid @RequestBody UserRequestDto.signupRequest request) {
         userService.signup(request);
         return ResponseEntity.ok("회원가입 성공");
+    }
+
+    // 로그인
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@Valid @RequestBody UserRequestDto.loginRequest request){
+        String token = userService.login(request);
+        return ResponseEntity.ok(token);
     }
 
 }
