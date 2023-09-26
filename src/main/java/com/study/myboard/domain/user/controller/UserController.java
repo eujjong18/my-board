@@ -37,7 +37,7 @@ public class UserController {
     // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody UserRequestDto.signupRequest request) {
-        userService.signupUser(request);
+        userService.signup(request);
         return ResponseEntity.ok("회원가입 성공");
     }
 

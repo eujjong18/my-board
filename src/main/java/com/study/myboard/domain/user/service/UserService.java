@@ -79,7 +79,7 @@ public class UserService {
     /**
      * 회원가입
      */
-    public void signupUser(UserRequestDto.signupRequest request){
+    public void signup(UserRequestDto.signupRequest request){
         // 닉네임 중복 여부 확인
         userRepository.findByNickname(request.getNickname()).ifPresent(user -> {
             throw new CustomException(NICKNAME_ALREADY_EXISTS);
@@ -97,6 +97,5 @@ public class UserService {
         User newUser = request.toEntity(encryptedPassword);
         userRepository.save(newUser);
     }
-
 
 }
