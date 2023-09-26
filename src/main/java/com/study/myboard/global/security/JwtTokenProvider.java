@@ -1,11 +1,14 @@
 package com.study.myboard.global.security;
 
+import com.study.myboard.domain.user.model.User;
+import com.study.myboard.domain.user.repository.UserRepository;
 import com.study.myboard.global.exception.CustomException;
 import com.study.myboard.global.type.Role;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
@@ -27,6 +30,7 @@ public class JwtTokenProvider {
     private long tokenValidTime = 30 * 60 * 1000L;
 
     private final CustomUserDetailsService customUserDetailsService;
+    private final UserRepository userRepository;
 
     // 객체 초기화, secretKey를 Base64로 인코딩
     protected void init() {
@@ -82,6 +86,28 @@ public class JwtTokenProvider {
             //log.error("Token Validation Error 그 외: ", e.getMessage());
             throw new CustomException(TOKEN_VALIDATION_ERROR);
         }
+    }
+
+    // SecurityContextHolder 를 통해 userId를 가져옴
+    public Long getUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+            User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+            return user.getId();
+        }
+        return null;
+    }
+
+    // HttpServletRequest 를 통해 userId를 가져옴
+    public Long getUserIdByServlet(HttpServletRequest request) {
+        String token = resolveToken(request); //토큰 추출
+        if (token != null && validateToken(token)) {
+            String userPk = getUserPK(token); //get email
+            User user = userRepository.findByEmail(userPk)
+                    .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+            return user.getId();
+        }
+        return null;
     }
 
 }
