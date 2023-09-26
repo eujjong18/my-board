@@ -7,6 +7,7 @@ import com.study.myboard.global.auth.MailService;
 import com.study.myboard.global.auth.RedisService;
 import com.study.myboard.global.exception.CustomErrorCode;
 import com.study.myboard.global.exception.CustomException;
+import com.study.myboard.global.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +30,7 @@ public class UserService {
     private final RedisService redisService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Value("${spring.mail.auth-code-expiration-millis}")
     private long authCodeExpirationMillis;
@@ -102,9 +104,17 @@ public class UserService {
      * 로그인
      */
     public String login(UserRequestDto.loginRequest request){
-        String token = null;
-        // TODO 로그인 로직
-        return token;
+        // 이메일 조회
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        // 비밀번호 확인
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new CustomException(LOGIN_FAILED);
+        }
+
+        // 토큰 생성 후 반환
+        return jwtTokenProvider.createToken(user.getEmail(), user.getRole());
     }
 
 }

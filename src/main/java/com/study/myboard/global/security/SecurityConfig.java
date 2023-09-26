@@ -40,6 +40,7 @@ public class SecurityConfig {
                 .authorizeRequests() // 요청에 대한 사용 권한 체크
                 .antMatchers("/auth/email/**").permitAll()
                 .antMatchers("/auth/signup").permitAll()
+                .antMatchers("/auth/login").permitAll()
                 .anyRequest().authenticated() // 그외 나머지 요청은 인증 필요
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
