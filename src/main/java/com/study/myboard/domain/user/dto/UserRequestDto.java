@@ -1,0 +1,75 @@
+package com.study.myboard.domain.user.dto;
+
+import com.study.myboard.domain.user.model.User;
+import com.study.myboard.global.type.Role;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+
+public class UserRequestDto {
+
+    // 이메일 인증코드 발송 요청
+    @Getter
+    @NoArgsConstructor
+    public static class askCodeRequest {
+        @NotBlank(message = "이메일은 필수 입력값입니다.")
+        @Email(message = "올바른 이메일 형식이 아닙니다.")
+        private String email;
+    }
+
+    // 이메일 인증코드 검증
+    @Getter
+    @NoArgsConstructor
+    public static class verifyCodeRequest {
+        @NotBlank(message = "이메일은 필수 입력값입니다.")
+        @Email(message = "올바른 이메일 형식이 아닙니다.")
+        private String email;
+
+        @NotBlank(message = "인증번호는 필수 입력값입니다.")
+        private String code;
+    }
+
+    // 회원가입
+    @Getter
+    @NoArgsConstructor
+    public static class signupRequest {
+        @NotBlank(message = "이름은 필수 입력값입니다.")
+        private String username;
+
+        @NotBlank(message = "닉네임은 필수 입력값입니다.")
+        private String nickname;
+
+        @NotBlank(message = "이메일은 필수 입력값입니다.")
+        @Email(message = "올바른 이메일 형식이 아닙니다.")
+        private String email;
+
+        @NotBlank(message = "비밀번호는 필수 입력값입니다.")
+        private String password;
+
+        public User toEntity(String encryptedPassword){
+            return User.builder()
+                    .username(username)
+                    .nickname(nickname)
+                    .email(email)
+                    .password(encryptedPassword)
+                    .role(Role.USER)
+                    .build();
+        }
+    }
+
+    // 로그인
+    @Getter
+    @NoArgsConstructor
+    public static class loginRequest {
+        @NotBlank(message = "이메일은 필수 입력값입니다.")
+        @Email(message = "올바른 이메일 형식이 아닙니다.")
+        private String email;
+
+        @NotBlank(message = "비밀번호는 필수 입력값입니다.")
+        private String password;
+    }
+
+
+}

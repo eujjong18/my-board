@@ -1,13 +1,16 @@
 package com.study.myboard.domain.user.model;
 
 import com.study.myboard.domain.BaseTimeEntity;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import com.study.myboard.global.type.Role;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor
 @Table(name = "users")
 public class User extends BaseTimeEntity {
 
@@ -27,4 +30,7 @@ public class User extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }

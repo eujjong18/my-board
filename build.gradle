@@ -24,6 +24,22 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	//validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	//이메일 인증
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
+	implementation 'javax.mail:javax.mail-api:1.6.2'
+
+	//Redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	//Spring Security, Jwt
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
