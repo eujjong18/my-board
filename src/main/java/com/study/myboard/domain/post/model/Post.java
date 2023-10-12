@@ -1,6 +1,7 @@
 package com.study.myboard.domain.post.model;
 
 import com.study.myboard.domain.BaseTimeEntity;
+import com.study.myboard.domain.post.dto.PostRequestDto;
 import com.study.myboard.domain.user.model.User;
 import lombok.*;
 
@@ -30,5 +31,10 @@ public class Post extends BaseTimeEntity {
 
     @Column(nullable = false)
     private Long view;
+
+    public void update(PostRequestDto request){
+        this.title = request.getTitle();
+        this.content = request.getContent();
+    }
 
 }

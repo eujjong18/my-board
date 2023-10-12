@@ -21,6 +21,12 @@ public class PostController {
         return ResponseEntity.ok().body("게시글 등록 성공");
     }
 
+    @PutMapping("/{postId}")
+    public ResponseEntity<String> updatePost(@PathVariable("postId") Long postId, @RequestBody PostRequestDto request){
+        postService.updatePost(postId, request);
+        return ResponseEntity.ok().body("게시글 수정 성공");
+    }
+
     @DeleteMapping("/{postId}")
     public ResponseEntity<String> deletePost(@PathVariable("postId") Long postId){
         postService.deletePost(postId);
