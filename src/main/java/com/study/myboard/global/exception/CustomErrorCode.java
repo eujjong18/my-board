@@ -24,7 +24,11 @@ public enum CustomErrorCode {
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, 2008, "토큰이 만료되었습니다."),
     INVALID_TOKEN_FORMAT(HttpStatus.BAD_REQUEST, 2009, "잘못된 토큰 형식입니다."),
     TOKEN_VALIDATION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 2010, "토큰 검증 중 오류가 발생했습니다."),
-    LOGIN_FAILED(HttpStatus.UNAUTHORIZED, 2011, "로그인 오류 : 아이디 또는 비밀번호가 일치하지 않습니다.");
+    LOGIN_FAILED(HttpStatus.UNAUTHORIZED, 2011, "로그인 오류 : 아이디 또는 비밀번호가 일치하지 않습니다."),
+    NO_PERMISSION(HttpStatus.FORBIDDEN, 2012, "게시글 수정 및 삭제 권한이 없습니다."),
+
+    // Post (3xxx)
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND, 3001, "존재하지 않는 게시글입니다.");
 
 
     private final HttpStatus httpStatus;
