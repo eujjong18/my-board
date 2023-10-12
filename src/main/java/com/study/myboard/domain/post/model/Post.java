@@ -2,9 +2,7 @@ package com.study.myboard.domain.post.model;
 
 import com.study.myboard.domain.BaseTimeEntity;
 import com.study.myboard.domain.user.model.User;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -12,6 +10,8 @@ import javax.persistence.*;
 @Table(name = "posts")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Builder
+@AllArgsConstructor
 public class Post extends BaseTimeEntity {
 
     @Id
