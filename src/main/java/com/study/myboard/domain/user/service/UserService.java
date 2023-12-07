@@ -1,7 +1,10 @@
 package com.study.myboard.domain.user.service;
 
+import com.study.myboard.domain.user.dto.LoginResponseDto;
 import com.study.myboard.domain.user.dto.UserRequestDto;
+import com.study.myboard.domain.user.model.RefreshToken;
 import com.study.myboard.domain.user.model.User;
+import com.study.myboard.domain.user.repository.RefreshTokenRepository;
 import com.study.myboard.domain.user.repository.UserRepository;
 import com.study.myboard.global.auth.MailService;
 import com.study.myboard.global.auth.RedisService;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
+import java.util.Optional;
 import java.util.Random;
 
 import static com.study.myboard.global.exception.CustomErrorCode.*;
@@ -31,6 +35,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenService refreshTokenService;
 
     @Value("${spring.mail.auth-code-expiration-millis}")
     private long authCodeExpirationMillis;
@@ -103,7 +108,7 @@ public class UserService {
     /**
      * 로그인
      */
-    public String login(UserRequestDto.loginRequest request){
+    public LoginResponseDto login(UserRequestDto.loginRequest request){
         // 이메일 조회
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
@@ -113,8 +118,13 @@ public class UserService {
             throw new CustomException(LOGIN_FAILED);
         }
 
-        // 토큰 생성 후 반환
-        return jwtTokenProvider.createToken(user.getEmail(), user.getRole());
+        // 토큰 생성
+        String accessToken =  jwtTokenProvider.createAccessToken(user.getEmail(), user.getRole());
+        String refreshToken =  jwtTokenProvider.createRefreshToken(user);
+
+        refreshTokenService.persistRefreshToken(refreshToken, user.getEmail());
+
+        return new LoginResponseDto(accessToken, refreshToken);
     }
 
 }

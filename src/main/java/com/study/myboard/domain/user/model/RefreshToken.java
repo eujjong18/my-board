@@ -1,19 +1,20 @@
 package com.study.myboard.domain.user.model;
 
+import com.study.myboard.domain.BaseTimeEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import java.time.LocalDateTime;
+import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class RefreshToken {
+@Builder
+@AllArgsConstructor
+public class RefreshToken extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +28,12 @@ public class RefreshToken {
     private String email;
 
     @Column(nullable = false)
-    private LocalDateTime expiredAt;
+    private Date expiredAt;
+
+
+    // refresh token 업데이트
+    public void update(String refreshToken){
+        this.refreshToken = refreshToken;
+    }
 
 }
