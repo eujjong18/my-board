@@ -15,6 +15,12 @@ public class PostController {
 
     private final PostService postService;
 
+    @GetMapping("")
+    public ResponseEntity<String> getPostList(){
+        // postService.getPostList();
+        return ResponseEntity.ok().body("게시글 목록 조회 구현 예정");
+    }
+
     @PostMapping("")
     public ResponseEntity<String> createPost(@Valid @RequestBody PostRequestDto request){
         postService.createPost(request);
