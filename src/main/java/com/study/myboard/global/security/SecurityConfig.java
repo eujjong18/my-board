@@ -1,6 +1,5 @@
 package com.study.myboard.global.security;
 
-import com.study.myboard.domain.user.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +12,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 @Configuration
 @RequiredArgsConstructor
@@ -21,7 +21,6 @@ public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
-    private final RefreshTokenRepository refreshTokenRepository;
 
 
     // 비밀번호 암호화
@@ -36,10 +35,6 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-//    @Bean
-//    public CustomLogoutSuccessHandler customLogoutSuccessHandler(RefreshTokenRepository refreshTokenRepository) {
-//        return new CustomLogoutSuccessHandler(refreshTokenRepository);
-//    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -52,9 +47,11 @@ public class SecurityConfig {
                 .antMatchers("/auth/email/**").permitAll()
                 .antMatchers("/auth/signup").permitAll()
                 .antMatchers("/auth/login").permitAll()
+                .antMatchers("/board").permitAll()
                 .anyRequest().authenticated() // 그외 나머지 요청은 인증 필요
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), LogoutFilter.class)
                 .logout()
                     .logoutUrl("/auth/logout")
                     .logoutSuccessHandler(customLogoutSuccessHandler);

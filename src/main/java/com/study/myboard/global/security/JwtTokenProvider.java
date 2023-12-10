@@ -34,7 +34,6 @@ public class JwtTokenProvider {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final UserRepository userRepository;
-    //private final RefreshTokenService refreshTokenService;
 
     // 객체 초기화, secretKey를 Base64로 인코딩
     protected void init() {
@@ -72,12 +71,6 @@ public class JwtTokenProvider {
         //refreshTokenService.persistRefreshToken(refreshToken, user.getEmail(), expiredAt);
 
         return refreshToken;
-    }
-
-    // 토큰 만료일 반환
-    public Date getTokenExpirationDate(String refreshToken){
-        Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(refreshToken).getBody();
-        return claims.getExpiration();
     }
 
     // JWT 토큰에서 인증 정보 조회

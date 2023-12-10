@@ -1,9 +1,7 @@
 package com.study.myboard.domain.user.service;
 
 import com.study.myboard.domain.user.dto.TokenRefreshDto;
-import com.study.myboard.domain.user.model.RefreshToken;
 import com.study.myboard.domain.user.model.User;
-import com.study.myboard.domain.user.repository.RefreshTokenRepository;
 import com.study.myboard.domain.user.repository.UserRepository;
 import com.study.myboard.global.exception.CustomException;
 import com.study.myboard.global.security.JwtTokenProvider;
@@ -17,12 +15,12 @@ import java.util.Date;
 import java.util.Optional;
 
 import static com.study.myboard.global.exception.CustomErrorCode.REFRESH_TOKEN_NOT_FOUND;
+import static com.study.myboard.global.exception.CustomErrorCode.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
 
-    private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
 
@@ -30,20 +28,10 @@ public class RefreshTokenService {
     @Transactional
     public void persistRefreshToken(String refreshToken, String email){
 
-        Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        // refresh token이 이미 있다면 업데이트, 없다면 저장
-        if(findRefreshToken.isPresent()){
-            findRefreshToken.get().update(refreshToken);
-        }else{
-            Date expiredAt = jwtTokenProvider.getTokenExpirationDate(refreshToken);
-            RefreshToken newRefreshToken = RefreshToken.builder()
-                    .refreshToken(refreshToken)
-                    .email(email)
-                    .expiredAt(expiredAt)
-                    .build();
-            refreshTokenRepository.save(newRefreshToken);
-        }
+        user.updateRefreshToken(refreshToken);
     }
 
 
@@ -53,11 +41,13 @@ public class RefreshTokenService {
         String newAccessToken = null;
 
         // refresh token 검증
-        RefreshToken findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken)
+        User user = userRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new CustomException(REFRESH_TOKEN_NOT_FOUND));
-        if(jwtTokenProvider.validateToken(refreshToken, TokenType.REFRESH_TOKEN)){
+
+        boolean isValid = jwtTokenProvider.validateToken(refreshToken, TokenType.REFRESH_TOKEN);
+        boolean isUserMatched = jwtTokenProvider.getUserPK(refreshToken).equals(user.getEmail());
+        if(isValid && isUserMatched){
             // access token 재발급
-            User user = userRepository.findByEmail(findRefreshToken.getEmail()).get();
             newAccessToken = jwtTokenProvider.createAccessToken(user.getEmail(), user.getRole());
         }
 

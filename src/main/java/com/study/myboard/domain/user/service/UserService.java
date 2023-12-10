@@ -2,13 +2,10 @@ package com.study.myboard.domain.user.service;
 
 import com.study.myboard.domain.user.dto.LoginResponseDto;
 import com.study.myboard.domain.user.dto.UserRequestDto;
-import com.study.myboard.domain.user.model.RefreshToken;
 import com.study.myboard.domain.user.model.User;
-import com.study.myboard.domain.user.repository.RefreshTokenRepository;
 import com.study.myboard.domain.user.repository.UserRepository;
 import com.study.myboard.global.auth.MailService;
 import com.study.myboard.global.auth.RedisService;
-import com.study.myboard.global.exception.CustomErrorCode;
 import com.study.myboard.global.exception.CustomException;
 import com.study.myboard.global.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
-import java.util.Optional;
 import java.util.Random;
 
 import static com.study.myboard.global.exception.CustomErrorCode.*;
